@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -97,6 +98,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
         void onClick(Movie movie);
     }
 
-
+    public void setFilter (List<Movie> newList){
+        movies.clear();
+        movies.addAll(newList);
+        notifyDataSetChanged();
+    }
 
 }

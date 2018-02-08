@@ -166,21 +166,36 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        /*
+
+
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+
+                newText = newText.toLowerCase();
+                List<Movie> newList = new ArrayList<>();
+
+                for (Movie movie : movies){
+                    String title = movie.getTitle().toLowerCase();
+
+                    if (title.contains(newText)){
+                        newList.add(movie);
+                    }
+                }
+
+                movieAdapter.setFilter(newList);
+                return true;
             }
         });
 
-        */
+
 
         return true;
     }
