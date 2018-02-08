@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     RecyclerView mMoviesList;
     MovieAdapter movieAdapter;
 
+    private EndlessRecyclerViewScrollListener scrollListener;
+
     List<Movie> movies = new ArrayList<>();
 
     @Override
@@ -45,7 +47,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         movieAdapter = new MovieAdapter(this);
         mMoviesList.setAdapter(movieAdapter);
 
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        mMoviesList.addOnScrollListener(scrollListener);
+
         URL SearchUrl = NetworkUtils.buildUrl();
+        new TheMovieAsyncTask().execute(SearchUrl);
+
+    }
+
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        URL SearchUrl = NetworkUtils.buildUrlFromPage(offset);
         new TheMovieAsyncTask().execute(SearchUrl);
 
     }
