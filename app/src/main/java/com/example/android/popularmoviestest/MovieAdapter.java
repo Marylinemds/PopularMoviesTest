@@ -1,7 +1,6 @@
 package com.example.android.popularmoviestest;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHolder> {
 
     final private ListItemClickHandler mOnClickHandler;
-    public Cursor mCursor;
     int count;
 
 
@@ -33,9 +31,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
         this.movies = movies;
     }
 
-    public MovieAdapter(ListItemClickHandler listener, Cursor cursor) {
+    public MovieAdapter(ListItemClickHandler listener) {
         mOnClickHandler = listener;
-        this.mCursor = cursor;
     }
 
 
