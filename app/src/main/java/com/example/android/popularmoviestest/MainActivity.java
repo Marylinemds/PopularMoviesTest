@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                             String id = resultsData.getString("id");
                             String posterPath = resultsData.getString("poster_path").replace("\\Tasks", "");
                             String backdropPath = resultsData.getString("backdrop_path").replace("\\Tasks", "");
-                            String picSize = "w185";
 
                             movie = new Movie();
                             movie.setTitle(title);
@@ -102,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                             movie.setId(id);
                             movie.setPosterPath(posterPath);
                             movie.setBackdropPath(backdropPath);
-                            movie.setPicSize(picSize);
 
                             movies.add(movie);
 

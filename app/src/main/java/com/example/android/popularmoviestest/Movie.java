@@ -13,7 +13,6 @@ public class Movie implements Parcelable{
     String posterPath;
     String overview;
     String releaseDate;
-    String picSize;
     String backdropPath;
     String id;
 
@@ -22,7 +21,6 @@ public class Movie implements Parcelable{
         posterPath = in.readString();
         overview = in.readString();
         releaseDate = in.readString();
-        picSize = in.readString();
         backdropPath = in.readString();
         id = in.readString();
     }
@@ -54,7 +52,6 @@ public class Movie implements Parcelable{
         dest.writeString(posterPath);
         dest.writeString(overview);
         dest.writeString(releaseDate);
-        dest.writeString(picSize);
         dest.writeString(backdropPath);
         dest.writeString(id);
     }
@@ -93,13 +90,6 @@ public class Movie implements Parcelable{
         this.releaseDate = releaseDate;
     }
 
-    public String getPicSize() {
-        return picSize;
-    }
-
-    public void setPicSize(String picSize) {
-        this.picSize = picSize;
-    }
 
     public String getBackdropPath() {
         return backdropPath;
