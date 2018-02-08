@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PopularMoviesTest</string>
+    <string name="overview">Overview</string>
 </resources>

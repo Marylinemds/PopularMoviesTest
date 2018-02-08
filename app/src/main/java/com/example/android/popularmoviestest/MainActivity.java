@@ -1,5 +1,7 @@
 package com.example.android.popularmoviestest;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -119,6 +121,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     @Override
     public void onClick(Movie movie) {
+
+
+
+        Context context = MainActivity.this;
+        Class destinationActivity = ChildActivity.class;
+        Intent startChildActivityIntent = new Intent(context, destinationActivity);
+        startChildActivityIntent.putExtra("MyClass", movie);
+        startActivity(startChildActivityIntent);
+
+
 
     }
 }

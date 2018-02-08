@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,10 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/backdrop_image"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp" />
+            android:background="@color/colorPrimaryDark"
+            android:paddingBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,17 +26,21 @@
 
 
             <ImageView
-                android:padding="16dp"
+                android:paddingLeft="32dp"
+                android:paddingTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/movie_poster"/>
+
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingLeft="16dp"
+                android:paddingRight="32dp"
+                android:paddingTop="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -41,26 +48,17 @@
                     android:id="@+id/movie_title"
                     android:paddingBottom="8dp"
                     android:textStyle="bold"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textColor="@android:color/black"/>
 
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-
                     <TextView
-                        android:gravity="bottom"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingRight="80dp"
+                        android:paddingBottom="24dp"
                         android:id="@+id/release_date"
                         android:textSize="32sp"
                         android:textColor="@android:color/black"/>
-
-                </LinearLayout>
 
 
             </LinearLayout>
@@ -70,15 +68,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="32dp"
+            android:paddingBottom="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/overview"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimaryDark" />
+
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/overview"
-                android:textSize="16sp"
-                android:padding="16dp"/>
+                android:textSize="14sp" />
 
 
         </LinearLayout>
     </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
