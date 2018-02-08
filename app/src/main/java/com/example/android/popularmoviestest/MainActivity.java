@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.android.popularmoviestest.Utilities.NetworkUtils;
 
@@ -25,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     RecyclerView mMoviesList;
     MovieAdapter movieAdapter;
 
+    Toolbar toolbar;
+
     private EndlessRecyclerViewScrollListener scrollListener;
 
     List<Movie> movies = new ArrayList<>();
@@ -33,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         mMoviesList = (RecyclerView) findViewById(R.id.rv_images);
         GridLayoutManager layoutManager;
@@ -53,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                loadNextDataFromApi(page);
+                URL SearchUrl = NetworkUtils.buildUrlFromPage(page);
+                new TheMovieAsyncTask().execute(SearchUrl);
             }
         };
         // Adds the scroll listener to RecyclerView
@@ -63,15 +74,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         new TheMovieAsyncTask().execute(SearchUrl);
 
     }
-
-    public void loadNextDataFromApi(int offset) {
-        // Send an API request to retrieve appropriate paginated data
-        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
-        URL SearchUrl = NetworkUtils.buildUrlFromPage(offset);
-        new TheMovieAsyncTask().execute(SearchUrl);
-
-    }
-
 
     public class TheMovieAsyncTask extends AsyncTask<URL, Void, String> {
 
@@ -154,5 +156,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_item, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        /*
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        */
+
+        return true;
     }
 }
