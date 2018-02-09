@@ -74,10 +74,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
                 if (!searchMode) {
 
-                    //movies.clear();
+                //I chose to put page+1 in order to not have the first 20 results twice
+                        URL SearchUrl = NetworkUtils.buildUrlFromPage(page+1);
+                        new TheMovieAsyncTask().execute(SearchUrl);
 
-                    URL SearchUrl = NetworkUtils.buildUrlFromPage(page);
-                    new TheMovieAsyncTask().execute(SearchUrl);
                 }
             }
 
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         URL SearchUrl = NetworkUtils.buildUrl();
         new TheMovieAsyncTask().execute(SearchUrl);
 
+
     }
 
 
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         @Override
         protected String doInBackground(URL... params) {
-
+            
             URL url = params[0];
             String movieData = null;
             try {
@@ -163,18 +164,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
 
-
     @Override
     public void onClick(Movie movie) {
-
-
 
         Context context = MainActivity.this;
         Class destinationActivity = ChildActivity.class;
         Intent startChildActivityIntent = new Intent(context, destinationActivity);
         startChildActivityIntent.putExtra("MyClass", movie);
         startActivity(startChildActivityIntent);
-
 
 
     }
@@ -197,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
                 if (!hasFocus) {
-                    movies.clear();
+                   // movies.clear();
                     URL SearchUrl = NetworkUtils.buildUrl();
                     new TheMovieAsyncTask().execute(SearchUrl);
 
@@ -238,7 +235,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                         }
                     }
 
-                    movieAdapter.setFilter(newList);
+                    movieAdapter.setMovies(newList);
+                    movieAdapter.notifyDataSetChanged();
                     searchMode = true;
 
 
