@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickHandler{
@@ -193,18 +194,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 // TODO Auto-generated method stub
 
 
-                if (!hasFocus) {
-                   // movies.clear();
-                    URL SearchUrl = NetworkUtils.buildUrl();
-                    new TheMovieAsyncTask().execute(SearchUrl);
-
-                    searchMode = false;
-                }
 
 
-
-
-                Toast.makeText(getApplicationContext(), String.valueOf(hasFocus),Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(), String.valueOf(hasFocus),Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -220,8 +212,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             @Override
             public boolean onQueryTextChange(String newText) {
 
-
-                if (newText.length()>0){
+                movies = new ArrayList<>(new LinkedHashSet<>(movies));
 
                 newText = newText.toLowerCase();
                 List<Movie> newList = new ArrayList<>();
@@ -235,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                         }
                     }
 
+
+
                     movieAdapter.setMovies(newList);
                     movieAdapter.notifyDataSetChanged();
                     searchMode = true;
@@ -242,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
 
-                }
+
 
                 return true;
             }

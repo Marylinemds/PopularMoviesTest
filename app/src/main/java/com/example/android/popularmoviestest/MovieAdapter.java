@@ -38,6 +38,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
     }
 
 
+
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
