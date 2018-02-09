@@ -13,6 +13,8 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.popularmoviestest.Utilities.NetworkUtils;
 
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     MovieAdapter movieAdapter;
 
     Toolbar toolbar;
+    boolean searchMode;
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        searchMode = false;
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -59,14 +64,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         // Retain an instance so that you can call `resetState()` for fresh searches
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+
+
+
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                URL SearchUrl = NetworkUtils.buildUrlFromPage(page);
-                new TheMovieAsyncTask().execute(SearchUrl);
+
+                if (!searchMode) {
+
+                    //movies.clear();
+
+                    URL SearchUrl = NetworkUtils.buildUrlFromPage(page);
+                    new TheMovieAsyncTask().execute(SearchUrl);
+                }
             }
+
+
         };
+
+
         // Adds the scroll listener to RecyclerView
         mMoviesList.addOnScrollListener(scrollListener);
 
@@ -74,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         new TheMovieAsyncTask().execute(SearchUrl);
 
     }
+
+
 
     public class TheMovieAsyncTask extends AsyncTask<URL, Void, String> {
 
@@ -143,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
 
+
     @Override
     public void onClick(Movie movie) {
 
@@ -167,34 +188,69 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener()
+        {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // TODO Auto-generated method stub
+
+
+                if (!hasFocus) {
+                    movies.clear();
+                    URL SearchUrl = NetworkUtils.buildUrl();
+                    new TheMovieAsyncTask().execute(SearchUrl);
+
+                    searchMode = false;
+                }
+
+
+
+
+                Toast.makeText(getApplicationContext(), String.valueOf(hasFocus),Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return true;
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
 
+
+                if (newText.length()>0){
+
                 newText = newText.toLowerCase();
                 List<Movie> newList = new ArrayList<>();
 
-                for (Movie movie : movies){
-                    String title = movie.getTitle().toLowerCase();
 
-                    if (title.contains(newText)){
-                        newList.add(movie);
+                    for (Movie movie : movies) {
+                        String title = movie.getTitle().toLowerCase();
+
+                        if (title.contains(newText)) {
+                            newList.add(movie);
+                        }
                     }
+
+                    movieAdapter.setFilter(newList);
+                    searchMode = true;
+
+
+
+
                 }
 
-                movieAdapter.setFilter(newList);
                 return true;
             }
-        });
 
+
+        });
 
 
         return true;

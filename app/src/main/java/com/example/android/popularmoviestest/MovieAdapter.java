@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -16,7 +17,7 @@ import java.util.List;
  * Created by Maryline on 2/8/2018.
  */
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHolder>{
 
     final private ListItemClickHandler mOnClickHandler;
     int count;
