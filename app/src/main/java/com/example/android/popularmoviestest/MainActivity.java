@@ -35,10 +35,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     Toolbar toolbar;
     boolean searchMode;
+    String searchText;
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
     List<Movie> movies = new ArrayList<>();
+    public List<Movie> HELPmovies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,24 +69,38 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
 
 
-
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
 
-                if (!searchMode) {
 
-                //I chose to put page+1 in order to not have the first 20 results twice
-                        URL SearchUrl = NetworkUtils.buildUrlFromPage(page+1);
-                        new TheMovieAsyncTask().execute(SearchUrl);
+                URL SearchUrl = NetworkUtils.buildUrlFromPage(page+1);
+                new TheMovieAsyncTask().execute(SearchUrl);
 
+
+
+                /*
+                if (searchMode) {
+                    searchText = searchText.toLowerCase();
+                    List<Movie> newList = new ArrayList<>();
+
+
+                    for (Movie movie : HELPmovies) {
+                        String title = movie.getTitle().toLowerCase();
+
+                        if (title.contains(searchText)) {
+                            newList.add(movie);
+                        }
+                    }
+
+                    movieAdapter.setFilter(newList);
+                    scrollListener.resetState();
                 }
+                */
             }
 
-
         };
-
 
         // Adds the scroll listener to RecyclerView
         mMoviesList.addOnScrollListener(scrollListener);
@@ -94,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
     }
-
 
 
     public class TheMovieAsyncTask extends AsyncTask<URL, Void, String> {
@@ -119,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         @Override
         protected void onPostExecute(String jsonData) {
 
-
             System.out.println("JSON " + jsonData);
             if (jsonData != null) {
                 try {
@@ -127,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     JSONObject obj = new JSONObject(jsonData);
                     JSONArray results = obj.getJSONArray("results");
 
+                    if(!searchMode) {
 
                         //iterate through JSON object and set fields to strings
                         for (int i = 0; i < results.length(); i++) {
@@ -151,19 +166,59 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                             movie.setBackdropPath(backdropPath);
 
                             movies.add(movie);
+                           // HELPmovies.add(movie);
 
                             movieAdapter.setMovies(movies);
                             movieAdapter.notifyDataSetChanged();
+
+                        }
+                    }else{
+
+                        //movies.clear();
+                        //HELPmovies.clear();
+                        //iterate through JSON object and set fields to strings
+                        for (int i = 0; i < results.length(); i++) {
+
+                            Movie movie;
+
+                            JSONObject resultsData = results.getJSONObject(i);
+
+                            String title = resultsData.getString("original_title");
+
+                            if (title.toLowerCase().contains(searchText)) {
+                                String overview = resultsData.getString("overview");
+                                String releaseDate = resultsData.getString("release_date");
+                                String id = resultsData.getString("id");
+                                String posterPath = resultsData.getString("poster_path").replace("\\Tasks", "");
+                                String backdropPath = resultsData.getString("backdrop_path").replace("\\Tasks", "");
+
+                                movie = new Movie();
+                                movie.setTitle(title);
+                                movie.setOverview(overview);
+                                movie.setReleaseDate(releaseDate);
+                                movie.setId(id);
+                                movie.setPosterPath(posterPath);
+                                movie.setBackdropPath(backdropPath);
+
+
+                                //movies.add(movie);
+                                HELPmovies.add(movie);
+                            }
+
+                            movieAdapter.setMovies(HELPmovies);
+                            movieAdapter.notifyDataSetChanged();
+
                         }
 
+
+
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }}
-
-
 
     @Override
     public void onClick(Movie movie) {
@@ -173,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         Intent startChildActivityIntent = new Intent(context, destinationActivity);
         startChildActivityIntent.putExtra("MyClass", movie);
         startActivity(startChildActivityIntent);
-
 
     }
 
@@ -191,34 +245,53 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                // TODO Auto-generated method stub
 
+                //Load again the infos when coming back to the home page.
+                HELPmovies.clear();
 
+                if(!hasFocus) {
+                    movieAdapter.setMovies(movies);
+                    movieAdapter.notifyDataSetChanged();
+                    searchMode = false;
 
+                }
 
                // Toast.makeText(getApplicationContext(), String.valueOf(hasFocus),Toast.LENGTH_SHORT).show();
             }
         });
 
 
-
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                //scrollListener.resetState();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                //scrollListener.resetState();
 
-                movies = new ArrayList<>(new LinkedHashSet<>(movies));
+                HELPmovies.clear();
+                searchText = newText;
+                searchMode = true;
 
-                newText = newText.toLowerCase();
+
+
+                URL SearchUrl = NetworkUtils.buildUrl();
+                new TheMovieAsyncTask().execute(SearchUrl);
+
+
+
+
+
+                //movies = new ArrayList<>(new LinkedHashSet<>(movies));
+
+                /*newText = newText.toLowerCase();
                 List<Movie> newList = new ArrayList<>();
 
 
-                    for (Movie movie : movies) {
+                    for (Movie movie : HELPmovies) {
                         String title = movie.getTitle().toLowerCase();
 
                         if (title.contains(newText)) {
@@ -226,23 +299,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                         }
                     }
 
+                    movieAdapter.setFilter(newList);
+                    scrollListener.resetState();
 
-
-                    movieAdapter.setMovies(newList);
-                    movieAdapter.notifyDataSetChanged();
-                    searchMode = true;
-
-
-
+*/
 
 
 
                 return true;
             }
 
-
         });
-
 
         return true;
     }
