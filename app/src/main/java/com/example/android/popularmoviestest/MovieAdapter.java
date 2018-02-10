@@ -5,12 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,10 +58,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
         Context context = viewHolder.poster.getContext();
         Movie movie = movies.get(position);
         String posterPath = movie.getPosterPath();
-        //String backdropPath = movie.getBackdropPath();
 
         Picasso.with(context).load("http://image.tmdb.org/t/p/" + "w185" + posterPath).into(viewHolder.poster);
-        //Picasso.with(context).load("http://image.tmdb.org/t/p/" + "w600" + backdropPath).into(viewHolder.backdrop);
 
         count = movies.size();
     }
@@ -77,13 +73,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView poster;
-        //public ImageView backdrop;
+
 
         public ImageViewHolder(View itemView) {
             super(itemView);
 
             poster = (ImageView) itemView.findViewById(R.id.movie_poster);
-           // backdrop = (ImageView) itemView.findViewById(R.id.backdrop_image);
 
             itemView.setOnClickListener(this);
         }

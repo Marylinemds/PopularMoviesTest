@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.example.android.popularmoviestest.Utilities.NetworkUtils;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     int pageCount;
 
     public Handler mHandler;
+
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
@@ -210,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 }
             }
 
+
         }}
 
     @Override
@@ -231,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.query_hint));
 
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener()
         {
