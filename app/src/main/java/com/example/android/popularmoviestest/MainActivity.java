@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.android.popularmoviestest.Utilities.NetworkUtils;
 
@@ -26,9 +26,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 
@@ -56,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         searchMode = false;
         pageCount = 1;
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,42 +72,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         movieAdapter = new MovieAdapter(this);
         mMoviesList.setAdapter(movieAdapter);
 
-        // Retain an instance so that you can call `resetState()` for fresh searches
+        // Retain an instance so that we can call `resetState()` for fresh searches
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
 
 
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
 
-            if (page>pageCount) {
-                URL SearchUrl = NetworkUtils.buildUrlFromPage(page);
+
+                URL SearchUrl = NetworkUtils.buildUrlFromPage(page+1);
                 new TheMovieAsyncTask().execute(SearchUrl);
-            }
 
-
-
-
-
-                /*
-                if (searchMode) {
-                    searchText = searchText.toLowerCase();
-                    List<Movie> newList = new ArrayList<>();
-
-
-                    for (Movie movie : HELPmovies) {
-                        String title = movie.getTitle().toLowerCase();
-
-                        if (title.contains(searchText)) {
-                            newList.add(movie);
-                        }
-                    }
-
-                    movieAdapter.setFilter(newList);
-                    scrollListener.resetState();
-                }
-                */
             }
 
         };
@@ -146,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         @Override
         protected void onPostExecute(String jsonData) {
 
+
             System.out.println("JSON " + jsonData);
             if (jsonData != null) {
                 try {
@@ -179,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                             movie.setBackdropPath(backdropPath);
 
                             movies.add(movie);
-                           // HELPmovies.add(movie);
 
                             movieAdapter.setMovies(movies);
                             movieAdapter.notifyDataSetChanged();
@@ -187,8 +161,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                         }
                     }else{
 
-                        //movies.clear();
-                        //HELPmovies.clear();
                         //iterate through JSON object and set fields to strings
                         for (int i = 0; i < results.length(); i++) {
 
@@ -220,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                             }
 
                         }
-                        //If we don't have at leat one result, onLoadMore will not be triggered
+                        //If we don't have at least one result, onLoadMore will not be triggered
 
                         if(HELPmovies.isEmpty()){
 
@@ -229,15 +201,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                             URL SearchUrl2 = NetworkUtils.buildUrlFromPage(pageCount);
                             new TheMovieAsyncTask().execute(SearchUrl2);
                         }
-
-
-
                         movieAdapter.setMovies(HELPmovies);
                         movieAdapter.notifyDataSetChanged();
-
-
                     }
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -274,9 +240,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
                 //Load again the infos when coming back to the home page.
 
-
-
                 if(!hasFocus) {
+                    HELPmovies.clear();
                     movieAdapter.setMovies(movies);
                     movieAdapter.notifyDataSetChanged();
                     searchMode = false;
@@ -285,8 +250,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     searchMode = true;
                 }
 
-
-               // Toast.makeText(getApplicationContext(), String.valueOf(hasFocus),Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -294,13 +257,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //scrollListener.resetState();
+
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //scrollListener.resetState();
+                scrollListener.resetState();
 
 
                     HELPmovies.clear();
@@ -321,15 +284,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                         new TheMovieAsyncTask().execute(SearchUrl);
 
                     }
-                }, 600);
-
-
-
-
+                }, 1100);
 
                     return true;
                 }
-
 
         });
 
