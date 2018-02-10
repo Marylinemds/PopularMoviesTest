@@ -113,5 +113,4 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
 
 
-
 }

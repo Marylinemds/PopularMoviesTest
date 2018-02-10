@@ -25,8 +25,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
+
+import static android.R.id.list;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickHandler{
 
@@ -36,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     Toolbar toolbar;
     boolean searchMode;
     String searchText;
+    int pageCount;
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
@@ -48,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         setContentView(R.layout.activity_main);
 
         searchMode = false;
+        pageCount = 1;
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,8 +83,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 // Add whatever code is needed to append new items to the bottom of the list
 
 
-                URL SearchUrl = NetworkUtils.buildUrlFromPage(page+1);
-                new TheMovieAsyncTask().execute(SearchUrl);
+
+
+
+                    URL SearchUrl = NetworkUtils.buildUrlFromPage(page);
+                    new TheMovieAsyncTask().execute(SearchUrl);
+
 
 
 
@@ -117,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         @Override
         protected String doInBackground(URL... params) {
-            
+
             URL url = params[0];
             String movieData = null;
             try {
@@ -186,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                             String title = resultsData.getString("original_title");
 
                             if (title.toLowerCase().contains(searchText)) {
+
                                 String overview = resultsData.getString("overview");
                                 String releaseDate = resultsData.getString("release_date");
                                 String id = resultsData.getString("id");
@@ -200,24 +213,31 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                                 movie.setPosterPath(posterPath);
                                 movie.setBackdropPath(backdropPath);
 
-
                                 //movies.add(movie);
                                 HELPmovies.add(movie);
                             }
 
-                            movieAdapter.setMovies(HELPmovies);
-                            movieAdapter.notifyDataSetChanged();
+                        }
+                        //If we don't have at leat one result, onLoadMore will not be triggered
 
+                        if(HELPmovies.isEmpty()){
+
+                            pageCount ++;
+
+                            URL SearchUrl2 = NetworkUtils.buildUrlFromPage(pageCount);
+                            new TheMovieAsyncTask().execute(SearchUrl2);
                         }
 
-
-
+                        movieAdapter.setMovies(HELPmovies);
+                        movieAdapter.notifyDataSetChanged();
                     }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
         }}
 
     @Override
@@ -256,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
                 }
 
+
                // Toast.makeText(getApplicationContext(), String.valueOf(hasFocus),Toast.LENGTH_SHORT).show();
             }
         });
@@ -273,15 +294,25 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 //scrollListener.resetState();
 
                 HELPmovies.clear();
+                pageCount = 1;
                 searchText = newText;
                 searchMode = true;
-
 
 
                 URL SearchUrl = NetworkUtils.buildUrl();
                 new TheMovieAsyncTask().execute(SearchUrl);
 
 
+
+/*
+               if (HELPmovies.size() == 0 && newText.length()>0){
+                    int i = 2;
+                    URL SearchUrl2 = NetworkUtils.buildUrlFromPage(i);
+                    new TheMovieAsyncTask().execute(SearchUrl2);
+
+                }
+
+*/
 
 
 
@@ -302,9 +333,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     movieAdapter.setFilter(newList);
                     scrollListener.resetState();
 
+
+
 */
-
-
 
                 return true;
             }
