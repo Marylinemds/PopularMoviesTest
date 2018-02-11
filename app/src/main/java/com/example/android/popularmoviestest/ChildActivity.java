@@ -28,7 +28,6 @@ public class ChildActivity extends AppCompatActivity {
         TextView releaseDate_tv = (TextView) findViewById(R.id.release_date);
         TextView overview_tv = (TextView) findViewById(R.id.overview);
 
-
         Intent startChildActivityIntent = getIntent();
 
         if (startChildActivityIntent != null) {

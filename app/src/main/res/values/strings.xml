@@ -3,4 +3,6 @@
     <string name="overview">Overview</string>
     <string name="action_search">action_search</string>
     <string name="query_hint">Type your search here</string>
+    <string name="backdrop_image">backdrop image</string>
+    <string name="movie_poster">movie poster</string>
 </resources>

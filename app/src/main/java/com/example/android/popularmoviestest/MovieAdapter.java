@@ -21,7 +21,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
     int count;
 
 
-    List<Movie> movies;
+    private List<Movie> movies;
 
     public List<Movie> getMovies() {
         return movies;
@@ -35,11 +35,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
         mOnClickHandler = listener;
     }
 
-
-
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
 
         Context context = parent.getContext();
         int layoutIdForPoster = R.layout.movie_item;
@@ -74,7 +71,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
 
         public ImageView poster;
 
-
         public ImageViewHolder(View itemView) {
             super(itemView);
 
@@ -93,12 +89,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ImageViewHol
 
     public interface ListItemClickHandler{
         void onClick(Movie movie);
-    }
-
-    public void setFilter (List<Movie> newList){
-        movies.clear();
-        movies.addAll(newList);
-        notifyDataSetChanged();
     }
 
 }

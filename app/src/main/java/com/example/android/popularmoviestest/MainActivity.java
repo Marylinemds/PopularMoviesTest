@@ -16,8 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.example.android.popularmoviestest.Utilities.NetworkUtils;
 
@@ -34,21 +32,20 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickHandler{
 
-    RecyclerView mMoviesList;
-    MovieAdapter movieAdapter;
-
-    Toolbar toolbar;
+    //Activity variables
     boolean searchMode;
-    String searchText;
     int pageCount;
 
-    public Handler mHandler;
-
+    Handler mHandler;
+    Toolbar toolbar;
+    RecyclerView mMoviesList;
+    MovieAdapter movieAdapter;
+    String searchText;
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
     List<Movie> movies = new ArrayList<>();
-    public List<Movie> HELPmovies = new ArrayList<>();
+    List<Movie> filteredMovies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +97,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     }
 
-
-    public class TheMovieAsyncTask extends AsyncTask<URL, Void, String> {
-
+    private class TheMovieAsyncTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... params) {
@@ -133,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
                     if(!searchMode) {
 
-                        HELPmovies.clear();
+                        filteredMovies.clear();
                         //iterate through JSON object and set fields to strings
                         for (int i = 0; i < results.length(); i++) {
 
@@ -189,22 +184,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                                 movie.setPosterPath(posterPath);
                                 movie.setBackdropPath(backdropPath);
 
-                                    HELPmovies.add(movie);
-
-
+                                    filteredMovies.add(movie);
                             }
-
                         }
                         //If we don't have at least one result, onLoadMore will not be triggered
 
-                        if(HELPmovies.isEmpty()){
+                        if(filteredMovies.isEmpty()){
 
                             pageCount ++;
 
                             URL SearchUrl2 = NetworkUtils.buildUrlFromPage(pageCount);
                             new TheMovieAsyncTask().execute(SearchUrl2);
                         }
-                        movieAdapter.setMovies(HELPmovies);
+                        movieAdapter.setMovies(filteredMovies);
                         movieAdapter.notifyDataSetChanged();
                     }
 
@@ -212,8 +204,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     e.printStackTrace();
                 }
             }
-
-
         }}
 
     @Override
@@ -246,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 //Load again the infos when coming back to the home page.
 
                 if(!hasFocus) {
-                    HELPmovies.clear();
+                    filteredMovies.clear();
                     movieAdapter.setMovies(movies);
                     movieAdapter.notifyDataSetChanged();
                     searchMode = false;
@@ -255,15 +245,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     searchMode = true;
                     movies.clear();
                 }
-
             }
         });
-
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 return false;
             }
 
@@ -271,32 +258,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             public boolean onQueryTextChange(String newText) {
                 scrollListener.resetState();
 
-
-                    HELPmovies.clear();
+                    filteredMovies.clear();
                     pageCount = 1;
                     searchText = newText;
 
-
                 //The Handler allow the app not going crazy and duplicate the search results when typing too fast.
-
-
                 mHandler.removeCallbacksAndMessages(null);
 
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //Put your call to the server here (with mQueryString)
                         URL SearchUrl = NetworkUtils.buildUrl();
                         new TheMovieAsyncTask().execute(SearchUrl);
-
                     }
                 }, 1100);
-
                     return true;
                 }
-
         });
-
         return true;
     }
 }

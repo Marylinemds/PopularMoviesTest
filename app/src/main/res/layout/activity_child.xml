@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:contentDescription="@string/backdrop_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/backdrop_image"
@@ -26,7 +27,9 @@
 
 
             <ImageView
+                android:contentDescription="@string/movie_poster"
                 android:paddingLeft="32dp"
+                android:paddingStart="32dp"
                 android:paddingTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +42,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="16dp"
+                android:paddingStart="16dp"
                 android:paddingRight="32dp"
+                android:paddingEnd="32dp"
                 android:paddingTop="16dp">
 
                 <TextView
