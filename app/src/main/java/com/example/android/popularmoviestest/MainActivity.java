@@ -189,8 +189,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                                 movie.setPosterPath(posterPath);
                                 movie.setBackdropPath(backdropPath);
 
-
                                     HELPmovies.add(movie);
+
 
                             }
 
@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
                 }else{
                     searchMode = true;
+                    movies.clear();
                 }
 
             }
